@@ -2,8 +2,9 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import argparse
 
-# Define valid base pairs 
+# Define valid base pairs
 VALID_PAIRS = ["AA", "AC", "AG", "AU", "CC", "CG", "CU", "GG", "GU", "UU"]
 
 def read_scores(input_dir):
@@ -24,9 +25,9 @@ def interpolate_scores(score_list):
     distance_bins = list(range(1, 21))
     interpolated_scores = []
 
-    for i in range(len(score_list)-1):
+    for i in range(len(score_list) - 1):
         x1, y1 = distance_bins[i], score_list[i]
-        x2, y2 = distance_bins[i+1], score_list[i+1]
+        x2, y2 = distance_bins[i + 1], score_list[i + 1]
 
         # Interpolation for distances between x1 and x2
         num_points = 10  # 10 points between each bin
@@ -64,12 +65,26 @@ def plot_interaction_profiles(scores, output_dir):
         plt.close()
 
 if __name__ == "__main__":
-    # Define input and output directories
-    input_directory = "/Structural_bioinfo/output"  
-    output_directory = "/Structural_bioinfo/plot"  
+    # Set up argument parser
+    parser = argparse.ArgumentParser(
+        description="Plot interaction profiles for RNA base pairs from score files."
+    )
+    parser.add_argument(
+        "input_directory",
+        type=str,
+        help="Path to the directory containing score files.",
+    )
+    parser.add_argument(
+        "output_directory",
+        type=str,
+        help="Path to the directory where plots will be saved.",
+    )
 
-    # Read scores from the output directory
-    scores = read_scores(input_directory)
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Read scores from the input directory
+    scores = read_scores(args.input_directory)
 
     # Plot and save the figures
-    plot_interaction_profiles(scores, output_directory)
+    plot_interaction_profiles(scores, args.output_directory)

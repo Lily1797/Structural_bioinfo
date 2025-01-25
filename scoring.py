@@ -1,9 +1,9 @@
 import os
 import math
 from collections import defaultdict
-import numpy as np
+import argparse
 
-# Define valid residues and valid pairs 
+# Define valid residues and valid pairs
 VALID_RESIDUES = {"A", "U", "G", "C"}
 VALID_PAIRS = {"AA", "AU", "AC", "AG", "CC", "CG", "CU", "GG", "GU", "UU"}
 
@@ -39,16 +39,16 @@ def parse_pdb(file_path):
 def compute_distances_and_scores(residues, scores):
     """Compute the interatomic distances and apply the scoring function."""
     total_score = 0
-    distances = defaultdict(lambda: [0] * 20) 
+    distances = defaultdict(lambda: [0] * 20)
 
     for i, (chain1, res_id1, res_name1, coord1) in enumerate(residues):
         for j, (chain2, res_id2, res_name2, coord2) in enumerate(residues):
             if chain1 == chain2 and abs(res_id1 - res_id2) >= 3:  # Same chain, separated by ≥3 residues
                 dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(coord1, coord2)))
                 bin_index = int(dist)
-                if bin_index < 20:  
+                if bin_index < 20:
                     pair = ''.join(sorted([res_name1, res_name2]))
-                    if pair in VALID_PAIRS: 
+                    if pair in VALID_PAIRS:
                         distances[pair][bin_index] += 1
 
     # Calculate total score using the observed and reference frequencies
@@ -58,7 +58,7 @@ def compute_distances_and_scores(residues, scores):
             pair_score = 0
             for i, count in enumerate(bins):
                 observed_freq = count / total_counts if total_counts > 0 else 0
-                ref_freq = 1 / 20 
+                ref_freq = 1 / 20
                 score = -math.log(observed_freq / ref_freq) if observed_freq > 0 else 10
                 pair_score += min(score, 10)  # Cap score at 10
 
@@ -97,11 +97,26 @@ def evaluate_all_puzzles(base_dir, score_dir):
     return results
 
 if __name__ == "__main__":
-    base_dir = "/Structural_bioinfo/standardized_dataset" 
-    score_directory = "/Structural_bioinfo/output"
+    # Set up argument parser
+    parser = argparse.ArgumentParser(
+        description="Evaluate Gibbs free energy for RNA puzzles in a dataset."
+    )
+    parser.add_argument(
+        "base_dir",
+        type=str,
+        help="Path to the base directory containing the RNA puzzles.",
+    )
+    parser.add_argument(
+        "score_dir",
+        type=str,
+        help="Path to the directory containing the score files.",
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
 
     # Evaluate all puzzles in the dataset
-    puzzle_results = evaluate_all_puzzles(base_dir, score_directory)
+    puzzle_results = evaluate_all_puzzles(args.base_dir, args.score_dir)
 
     # Print the results (Gibbs free energy for each puzzle)
     for puzzle, gibbs_energy in puzzle_results.items():

@@ -1,5 +1,6 @@
 import os
 import math
+import argparse
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -8,9 +9,11 @@ import numpy as np
 VALID_RESIDUES = {"A", "U", "G", "C"}
 VALID_PAIRS = {"AA", "AC", "AG", "AU", "CC", "CG", "CU", "GG", "GU", "UU"}
 
+
 def initialize_counts():
     """Initialize a list of zeros for distance bins (20 bins)."""
     return np.zeros(20)
+
 
 def parse_pdb(file_path):
     """Parse a PDB file to extract residues with their C3' atom coordinates."""
@@ -26,6 +29,7 @@ def parse_pdb(file_path):
                     residues.append((chain, res_id, res_name, (x, y, z)))
     return residues
 
+
 def compute_distances(residues):
     """Compute interatomic distances for valid residue pairs separated by ≥3 positions."""
     distances = defaultdict(initialize_counts)
@@ -40,6 +44,7 @@ def compute_distances(residues):
                         distances[pair][bin_index] += 1
     return distances
 
+
 def aggregate_counts(all_distances):
     """Aggregate counts across all PDB files."""
     combined_counts = defaultdict(lambda: [0] * 20)
@@ -49,6 +54,7 @@ def aggregate_counts(all_distances):
                 for bin_idx, count in enumerate(bins):
                     combined_counts[pair][bin_idx] += count
     return combined_counts
+
 
 def calculate_scores(combined_counts):
     """Calculate scores for each base pair and distance bin."""
@@ -80,6 +86,7 @@ def process_single_file(pdb_file):
     residues = parse_pdb(pdb_file)
     return compute_distances(residues)
 
+
 def process_pdb_files_parallel(pdb_files, output_dir):
     """Process multiple PDB files in parallel and compute scores."""
     with ProcessPoolExecutor() as executor:
@@ -88,13 +95,36 @@ def process_pdb_files_parallel(pdb_files, output_dir):
     scores = calculate_scores(combined_counts)
     write_scores(scores, output_dir)
 
-if __name__ == "__main__":
-    # Define input and output directories
-    pdb_directory = "/Structural_bioinfo/data"
-    output_directory = "/Structural_bioinfo/output"
 
-    # List all PDB files in the directory
-    pdb_files = [os.path.join(pdb_directory, f) for f in os.listdir(pdb_directory) if f.endswith(".pdb")]
+if __name__ == "__main__":
+    # Set up argument parser
+    parser = argparse.ArgumentParser(
+        description="Process PDB files to compute pseudo-energy scores for RNA base pairs."
+    )
+    parser.add_argument(
+        "pdb_directory",
+        type=str,
+        help="Path to the directory containing PDB files.",
+    )
+    parser.add_argument(
+        "output_directory",
+        type=str,
+        help="Path to the directory where output scores will be saved.",
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # List all PDB files in the input directory
+    pdb_files = [
+        os.path.join(args.pdb_directory, f)
+        for f in os.listdir(args.pdb_directory)
+        if f.endswith(".pdb")
+    ]
+
+    if not pdb_files:
+        print(f"No PDB files found in {args.pdb_directory}.")
+        exit(1)
 
     # Process PDB files and generate output
-    process_pdb_files_parallel(pdb_files, output_directory)
+    process_pdb_files_parallel(pdb_files, args.output_directory)
