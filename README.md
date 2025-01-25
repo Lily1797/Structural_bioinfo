@@ -17,7 +17,7 @@ QUERY: Polymer Entity Type = "RNA" AND Polymer Entity Sequence Length > 2000 AND
 #### Train the objective function
 To analyze RNA structures in PDB format, we first used the *train_all.py* script to compute interatomic distances between residue pairs.
 ```
-usage: script_name.py [-h] pdb_directory output_directory
+usage: python train.py [-h] pdb_directory output_directory
 
 Process PDB files to compute pseudo-energy scores for RNA base pairs.
 
@@ -32,7 +32,7 @@ The scores for each residue pair were saved into separate text files in the [out
 #### Plot the scoring profiles
 Subsequently, we used the *plot.py* script to generate interaction profile plots for RNA base pairs based on computed scores.
 ```
-usage: script_name.py [-h] input_directory output_directory
+usage: python plot.py [-h] input_directory output_directory
 
 Plot interaction profiles for RNA base pairs from score files.
 
@@ -50,7 +50,7 @@ Predicted structures: [RNA puzzles](https://github.com/RNA-Puzzles/standardized_
 We downloaded all 23 structures and stored them in the [puzzles directory](standardized_dataset/). 
 To evaluate the predicted structures from the RNA-Puzzles dataset, we used the *scoring.py* script, which shares some similarities with the training script. This script calculates all interatomic distances for a given structure, applying the same thresholds (20 Å and 𝑖, 𝑖+4). For each distance, a scoring value is determined through linear interpolation. By summing all these scores, the script computes the estimated Gibbs free energy of the evaluated RNA conformation.
 ```
-usage: script_name.py [-h] base_dir score_dir
+usage: python scoring.py [-h] base_dir score_dir
 
 Evaluate Gibbs free energy for RNA puzzles in a dataset.
 
