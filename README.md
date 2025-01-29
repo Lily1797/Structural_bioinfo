@@ -61,33 +61,6 @@ positional arguments:
 optional arguments:
   -h, --help  Show this help message and exit.
 ```
-Results
-```
-Puzzle rp02: Estimated Gibbs Free Energy = 1372.3060
-Puzzle rp11: Estimated Gibbs Free Energy = 1042.2684
-Puzzle rp10: Estimated Gibbs Free Energy = 787.1789
-Puzzle rp12: Estimated Gibbs Free Energy = 777.0650
-Puzzle rp05: Estimated Gibbs Free Energy = 692.4727
-Puzzle rp07: Estimated Gibbs Free Energy = 715.1541
-Puzzle rp09: Estimated Gibbs Free Energy = 890.7312
-Puzzle rp18: Estimated Gibbs Free Energy = 982.4398
-Puzzle rp03: Estimated Gibbs Free Energy = 941.8519
-Puzzle rp04: Estimated Gibbs Free Energy = 767.4005
-Puzzle rp20: Estimated Gibbs Free Energy = 1095.2514
-Puzzle rp08: Estimated Gibbs Free Energy = 827.3233
-Puzzle rp15: Estimated Gibbs Free Energy = 1037.9824
-Puzzle rp17: Estimated Gibbs Free Energy = 901.8072
-Puzzle rp14_free: Estimated Gibbs Free Energy = 944.9496
-Puzzle rp13: Estimated Gibbs Free Energy = 999.4704
-Puzzle rp06: Estimated Gibbs Free Energy = 722.3957
-Puzzle rp01: Estimated Gibbs Free Energy = 1276.2236
-Puzzle rp24: Estimated Gibbs Free Energy = 867.8210
-Puzzle rp19: Estimated Gibbs Free Energy = 1232.4318
-Puzzle rp16_TBA: Estimated Gibbs Free Energy = 0.0000
-Puzzle rp14_bound: Estimated Gibbs Free Energy = 987.3209
-Puzzle .git: Estimated Gibbs Free Energy = 0.0000
-Puzzle rp21: Estimated Gibbs Free Energy = 950.9333
-```
 
 ### Directory Structure
 ```
